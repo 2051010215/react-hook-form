@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row } from 'antd';
 import axios from 'axios';
-import { StyledViewMoreButton, StyledCard, StyledImg } from '../styles/StyledComponents';
+import { StyledViewMoreButton, StyledCard, StyledImg, StyledForm, StyledLabel, StyledInput, StyledSearchButton } from '../styles/StyledComponents';
 import { useForm } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
 
@@ -71,10 +71,10 @@ const CardBody = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <StyledForm onSubmit={handleSubmit(onSubmit)} noValidate>
                 <div style={{ marginBottom: 10 }}>
-                    <label>Quick Search:</label>
-                    <input
+                    <StyledLabel>Quick Search:</StyledLabel>
+                    <StyledInput
                         style={{ marginInline: 10 }}
                         type="search"
                         placeholder="Enter author name..."
@@ -82,22 +82,22 @@ const CardBody = () => {
                     />
                 </div>
 
-                <label>Id Range:</label>
-                <input
+                <StyledLabel>Id Range:</StyledLabel>
+                <StyledInput
                     style={{ marginInline: 10 }}
                     type="number"
                     placeholder="Start Id..."
                     {...register('idRange.start')}
                 />
-                <input
+                <StyledInput
                     style={{ marginInline: 10 }}
                     type="number"
                     placeholder="End Id..."
                     {...register('idRange.end')}
                 />
 
-                <button type="submit">Search</button>
-            </form>
+                <StyledSearchButton type="submit">Search</StyledSearchButton>
+            </StyledForm>
             <DevTool control={control} />
 
             {!showAll && (
