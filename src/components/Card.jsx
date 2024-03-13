@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row } from 'antd';
 import axios from 'axios';
-import { StyledViewMoreButton, StyledCard, StyledImg, StyledForm, StyledLabel, StyledInput, StyledSearchButton } from '../styles/StyledComponents';
+import {
+    StyledViewMoreButton, StyledCard, StyledImg, StyledForm, StyledLabel
+    , StyledInput, StyledSearchButton, StyledErrorSpan
+} from '../styles/StyledComponents';
 import { useForm } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
 
@@ -9,7 +12,7 @@ const { Meta } = Card;
 
 const fetchAlbumPhoto = async (page) => {
     try {
-        const res = await axios.get(`https://picsum.photos/v2/list?page=${page}&limit=24`)
+        const res = await axios.get(`https://picsum.photos/v2/list?page=${page}&limit=15`)
         return res.data
     } catch (error) {
         console.log(error);
@@ -18,12 +21,13 @@ const fetchAlbumPhoto = async (page) => {
 
 const CardBody = () => {
     const [albumPhotos, setAlbumPhotos] = useState([]);
-    const [nextPage, setNextPage] = useState(10);
+    const [nextPage, setNextPage] = useState(12);
     const [formValues, setFormValues] = useState({
         search: '',
         idRange: { start: null, end: null },
     });
     const [showAll, setShowAll] = useState(true);
+    const [dataFetchTrigger, setDataFetchTrigger] = useState(true);
 
     const handleViewMore = async () => {
         try {
@@ -32,13 +36,26 @@ const CardBody = () => {
             setAlbumPhotos(newPhotos);
             setNextPage(nextPage + 1);
             console.log(newPhotos);
+
         } catch (error) {
             console.log(error);
         }
     };
 
     useEffect(() => {
-        handleViewMore();
+        handleViewMore()    
+        // setDataFetchTrigger thành false để trigger
+        setDataFetchTrigger(false)
+
+    }, [dataFetchTrigger]);
+
+    useEffect(() => {
+        // Sử dụng setInterval để tự động gôi hàm fetch data sau mỗi 60 giây 
+        const intervalId = setInterval(() => {
+            setDataFetchTrigger(true);
+        }, 600000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
     const form = useForm({
@@ -46,9 +63,14 @@ const CardBody = () => {
     });
 
     const { register, control, handleSubmit, formState, } = form;
-    const { errors } = formState;
+    const { errors, isSubmitting } = formState;
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
+        setFormValues({
+            search: '',
+            idRange: { start: null, end: null },
+        })
+        await new Promise((resolve) => setTimeout(resolve, 2000))
         console.log(data);
         const { search, idRange } = data;
 
@@ -73,42 +95,65 @@ const CardBody = () => {
         <>
             <StyledForm onSubmit={handleSubmit(onSubmit)} noValidate>
                 <div style={{ marginBottom: 10 }}>
-                    <StyledLabel>Quick Search:</StyledLabel>
+                    <StyledLabel>Search author name:</StyledLabel>
                     <StyledInput
                         style={{ marginInline: 10 }}
                         type="search"
                         placeholder="Enter author name..."
-                        {...register('search')}
+                        {...register('search', {
+                            pattern: {
+                                value: /^[a-zA-Z ]*$/,
+                                message: 'Its must be a valid string!'
+                            }
+                        })}
                     />
+                    <StyledErrorSpan>{errors.search?.message}</StyledErrorSpan>
                 </div>
 
-                <StyledLabel>Id Range:</StyledLabel>
-                <StyledInput
-                    style={{ marginInline: 10 }}
-                    type="number"
-                    placeholder="Start Id..."
-                    {...register('idRange.start')}
-                />
-                <StyledInput
-                    style={{ marginInline: 10 }}
-                    type="number"
-                    placeholder="End Id..."
-                    {...register('idRange.end')}
-                />
+                <div>
+                    <StyledLabel>Search Id Range:</StyledLabel>
+                    <StyledInput
+                        style={{ marginInline: 10 }}
+                        type="number"
+                        placeholder="Start Id..."
+                        {...register('idRange.start', {
+                            pattern: {
+                                value: /^\d+$/,
+                                message: 'Its must be a valid number!'
+                            }
+                        })}
+                    />
+                    {/* <StyledErrorSpan>{errors.idRange.start?.message}</StyledErrorSpan> */}
+                    <StyledInput
+                        style={{ marginInline: 10 }}
+                        type="number"
+                        placeholder="End Id..."
+                        {...register('idRange.end', {
+                            pattern: {
+                                value: /^\d+$/,
+                                message: 'Its must be a valid number!'
+                            }
+                        })}
+                    />
+                    {/* <StyledErrorSpan>{errors.idRange.end?.message}</StyledErrorSpan> */}
+                </div>
 
-                <StyledSearchButton type="submit">Search</StyledSearchButton>
+                <StyledSearchButton disabled={isSubmitting} type="submit">
+                    {isSubmitting ? "Loading..." : "Submit"}
+                </StyledSearchButton>
             </StyledForm>
             <DevTool control={control} />
 
             {!showAll && (
                 <div style={{ paddingLeft: '2%', display: 'flex', marginTop: '10px' }}>
                     <h2 style={{ flex: '85%' }}>Search result: </h2>
-                    <Button style={{ flex: '15%'}} onClick={() => setShowAll(true)}>
+                    <Button style={{ flex: '15%' }} onClick={() => setShowAll(true)}>
                         Show All
                     </Button>
                 </div>
             )}
             <Row gutter={[20, 20]}>
+                {}
                 {filteredPhotos.map((item) => (
                     <Col key={item.id}>
                         <StyledCard

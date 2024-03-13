@@ -1,19 +1,25 @@
 import styled from 'styled-components';
 import { Button, Card, Image } from 'antd';
 
+
 export const StyledCard = styled(Card)`
     margin-top: 10px;
-    margin-left: 20px;
     padding: 5px;
-    width: 350px;
+    width: 390px;  
     @media (max-width: 760px) {
-    width: 92%;
+    width: 100%; 
   }
 `
+
 export const StyledImg = styled(Image)`
     max-height: 225px;
     min-height: 225px;
     border-radius: 8px;
+`
+
+export const StyledErrorSpan = styled.span`
+  color: red;
+  padding-left: 10px;
 `
 
 export const StyledViewMoreButton = styled(Button)`
@@ -22,7 +28,9 @@ export const StyledViewMoreButton = styled(Button)`
     background-color: dodgerblue;
     width: 200px;
     height: 50px;
+    border: 0;
 `
+
 export const StyledButton = styled(Button)`
     margin-left: 20px;
     height: inherit;
@@ -56,7 +64,7 @@ export const StyledInput = styled.input`
 `
 
 export const StyledSearchButton = styled.button`
-  background-color: #4caf50;
+  background-color: dodgerblue;
   color: white;
   padding: 10px;
   margin-top: 10px;

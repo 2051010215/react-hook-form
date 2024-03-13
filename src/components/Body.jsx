@@ -1,5 +1,6 @@
 import React from 'react';
-import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
+import background2 from "../assets/astronauta-terrestre-2-small3.jpg"
+import { DownOutlined, GlobalOutlined, HomeOutlined, ProfileOutlined, TeamOutlined, WalletOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Space, theme, Dropdown } from 'antd';
 import CardBody from './Card';
 import { StyledButton } from '../styles/StyledComponents';
@@ -30,10 +31,10 @@ const Body = () => {
             alignItems: 'center',
           }}
         >
-          <StyledButton mode="horizontal" > Home </StyledButton>
-          <StyledButton mode="horizontal" > About Us </StyledButton>
-          <StyledButton mode="horizontal" > Our Team </StyledButton>
-          <StyledButton mode="horizontal" > Connenct Wallet </StyledButton>
+          <StyledButton mode="horizontal" ><HomeOutlined /> Home </StyledButton>
+          <StyledButton mode="horizontal" ><ProfileOutlined /> About Us </StyledButton>
+          <StyledButton mode="horizontal" ><TeamOutlined /> Our Team </StyledButton>
+          <StyledButton mode="horizontal" ><WalletOutlined />Connenct Wallet </StyledButton>
           <StyledButton mode="horizontal" >
             <Dropdown
               menu={{
@@ -62,7 +63,7 @@ const Body = () => {
                 padding: 24,
                 margin: 0,
                 minHeight: 280,
-                background: colorBgContainer,
+                backgroundImage:  `url(${background2})`,
                 borderRadius: borderRadiusLG,
               }}
             >
